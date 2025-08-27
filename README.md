@@ -71,3 +71,7 @@ The gradient creates a subtle depth effect by:
 3. Ending with a slightly darker shade at the bottom
 
 The `depth_factor` parameter controls how pronounced this gradient effect appears.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
