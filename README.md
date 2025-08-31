@@ -1,6 +1,6 @@
 # Simple iOS Icon Background Generator (from Hex Code)
 
-A Python script that generates square images with subtle gradient backgrounds from a hex code, perfect for iOS app icons.
+A Python script that generates square images with subtle gradient backgrounds from a hex code, with optional transparent PNG overlay support, perfect for iOS app icons.
 
 ## Features
 
@@ -8,6 +8,7 @@ A Python script that generates square images with subtle gradient backgrounds fr
 - Supports any hex color input
 - Configurable image size and gradient depth
 - Generates smooth linear gradients with depth-like appearance
+- Optional transparent PNG foreground overlay support
 
 ## Requirements
 
@@ -33,7 +34,7 @@ python main.py "#007AFF"
 ### Advanced Options
 
 ```bash
-python main.py "#007AFF" --size 512 --depth_factor 2.0
+python main.py "#007AFF" --size 512 --depth_factor 2.0 --foreground icon.png
 ```
 
 ### Arguments
@@ -41,6 +42,7 @@ python main.py "#007AFF" --size 512 --depth_factor 2.0
 - `hex_color` (required): The hexadecimal color code (e.g., "#007AFF")
 - `-s, --size`: Resolution of the square image in pixels (default: 1024)
 - `-d, --depth_factor`: Multiplier to control gradient intensity (default: 3.0)
+- `-f, --foreground`: Optional path to a transparent PNG to overlay on the background
 
 ## Examples
 
@@ -57,6 +59,11 @@ python main.py "#FF3B30" --size 256 --depth_factor 1.0
 Create a green background with pronounced depth effect:
 ```bash
 python main.py "#34C759" --size 1024 --depth_factor 2.5
+```
+
+Generate a background with foreground overlay:
+```bash
+python main.py "#FF9500" --foreground logo.png
 ```
 
 ## Output

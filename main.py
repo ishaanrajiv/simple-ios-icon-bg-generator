@@ -4,7 +4,7 @@ from PIL import Image, ImageDraw
 import sys
 import argparse
 
-def create_icon_background(hex_color: str, size: int = 1024, depth_factor: float = 1.5):
+def create_icon_background(hex_color: str, size: int = 1024, depth_factor: float = 1.5, foreground_path: str = None):
     """
     Generates a square image with a subtle depth-like gradient.
 
@@ -13,6 +13,7 @@ def create_icon_background(hex_color: str, size: int = 1024, depth_factor: float
         size (int): The resolution of the square image in pixels (e.g., 1024 for 1024x1024).
         depth_factor (float): A multiplier to control the intensity of the gradient effect.
                               Higher values create a more pronounced depth effect.
+        foreground_path (str): Optional path to a transparent PNG to overlay on the background.
     """
     # Ensure the hex code starts with a '#'.
     if not hex_color.startswith('#'):
@@ -57,6 +58,34 @@ def create_icon_background(hex_color: str, size: int = 1024, depth_factor: float
             # Draw a single line of the calculated color.
             draw.line([(0, i), (size, i)], fill=(r, g, b))
 
+        # If a foreground image is provided, overlay it on the background
+        if foreground_path:
+            try:
+                # Load the foreground image
+                foreground = Image.open(foreground_path)
+                
+                # Ensure the foreground has an alpha channel (transparency)
+                if foreground.mode != 'RGBA':
+                    foreground = foreground.convert('RGBA')
+                
+                # Resize foreground to match the background size if needed
+                if foreground.size != (size, size):
+                    foreground = foreground.resize((size, size), Image.Resampling.LANCZOS)
+                
+                # Convert background to RGBA for compositing
+                img = img.convert('RGBA')
+                
+                # Composite the foreground onto the background
+                img = Image.alpha_composite(img, foreground)
+                
+                # Convert back to RGB for PNG saving
+                img = img.convert('RGB')
+                
+            except FileNotFoundError:
+                print(f"Warning: Foreground image '{foreground_path}' not found. Proceeding without foreground.", file=sys.stderr)
+            except Exception as e:
+                print(f"Warning: Could not process foreground image '{foreground_path}': {e}. Proceeding without foreground.", file=sys.stderr)
+
         # Define the output file name.
         output_filename = f"icon_background_{size}.png"
         img.save(output_filename)
@@ -73,8 +102,10 @@ if __name__ == "__main__":
                         help="The resolution of the square image in pixels (default: 1024).")
     parser.add_argument("-d", "--depth_factor", type=float, default=3.0,
                         help="A multiplier to control the intensity of the gradient effect (default: 3.0).")
+    parser.add_argument("-f", "--foreground", type=str, default=None,
+                        help="Optional path to a transparent PNG to overlay on the background.")
 
     args = parser.parse_args()
     
     # Call the function with the parsed arguments.
-    create_icon_background(args.hex_color, args.size, args.depth_factor)
+    create_icon_background(args.hex_color, args.size, args.depth_factor, args.foreground)
